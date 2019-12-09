@@ -1,0 +1,25 @@
+import netmiko
+from netmiko import ConnectHandler
+import nelsnmp
+from nelsnmp.snmp import SnmpHandler
+from nelsnmp.hostinfo.device import HostInfo
+
+print('You are about to access a secure system. \n Unauthorized Access Prohibited! \n Violators Will Be Prosecuted!')
+
+
+
+Device_Count = dict()
+for n in range(11, 15):
+    target_ip = "192.168.1.{0}".format(n)
+    try:
+        node = SnmpHandler(host=target_ip, version='2c', community='cisco')
+        nodeinfo = HostInfo(node)
+        if nodeinfo.vendor not in Device_Count:
+            Device_Count[nodeinfo.vendor] = 1
+        else:
+            Device_Count[nodeinfo.vendor] += 1
+
+    except:
+        print('Device unreachable')
+
+print(Device_Count)
